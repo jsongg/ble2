@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">电视遥控服务</string>
+    <string name="accessibility_label">电视遥控服务（鼠标键盘注入）</string>
+    <string name="accessibility_desc">开启后，手机可以通过局域网发送鼠标指针、点击、滚动和按键指令来控制本机。本服务不会读取您的隐私内容。</string>
+</resources>

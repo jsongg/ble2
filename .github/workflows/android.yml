@@ -1,0 +1,85 @@
+name: Build TV APK
+
+# 触发方式：
+#   1. push 到 main/master 且改动落在 tv-server/ 下
+#   2. 网页上点 "Run workflow" 手动触发
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'tv-server/**'
+      - '.github/workflows/android.yml'
+  pull_request:
+    paths:
+      - 'tv-server/**'
+  workflow_dispatch:
+
+# 同一分支连续 push 时取消上一轮，省额度
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tv-server
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # AGP 8.5 要求 JDK 17，runner 自带的是 11/17 混合环境，这里固定成 17
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      # 仓库里刻意没提交 gradle-wrapper.jar（二进制不便入库），
+      # 所以这里让 action 直接装一个 8.7 到 PATH，用 gradle 命令而不是 ./gradlew
+      - name: Setup Gradle 8.7
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+          validate-wrappers: false
+
+      # runner 镜像自带的 SDK 不一定有 platform 34，缺了就补上
+      - name: Ensure Android SDK platform 34
+        run: |
+          SDK="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
+          echo "SDK root: $SDK"
+          for d in "$SDK/cmdline-tools/latest/bin" "$SDK/tools/bin"; do
+            [ -d "$d" ] && export PATH="$d:$PATH"
+          done
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager "platforms;android-34" "build-tools;34.0.0" > /dev/null || true
+
+      - name: Build debug APK
+        run: gradle assembleDebug --no-daemon --stacktrace
+
+      - name: List output
+        run: ls -lh app/build/outputs/apk/debug/
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: tv-server-debug-apk
+          path: tv-server/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload build reports on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-reports
+          path: |
+            tv-server/app/build/reports/**
+            tv-server/build/reports/**
+          if-no-files-found: ignore
+          retention-days: 7

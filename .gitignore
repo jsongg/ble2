@@ -1,0 +1,26 @@
+# ---------------- Android / Gradle ----------------
+tv-server/.gradle/
+tv-server/build/
+tv-server/app/build/
+tv-server/local.properties
+tv-server/captures/
+*.hprof
+*.apk
+*.aab
+*.jks
+*.keystore
+
+# ---------------- IDE ----------------
+.idea/
+*.iml
+.vscode/
+
+# ---------------- uniapp ----------------
+uniapp-app/unpackage/
+uniapp-app/node_modules/
+uniapp-app/.hbuilderx/
+
+# ---------------- 系统 ----------------
+.DS_Store
+Thumbs.db
+desktop.ini

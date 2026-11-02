@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.TvRemote" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">#FF101318</item>
+        <item name="android:colorAccent">#FF3E9DFF</item>
+    </style>
+</resources>

@@ -1,0 +1,25 @@
+{
+	"pages": [
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationStyle": "custom",
+				"backgroundColor": "#0E1218"
+			}
+		},
+		{
+			"path": "pages/remote/remote",
+			"style": {
+				"navigationStyle": "custom",
+				"backgroundColor": "#0E1218",
+				"disableScroll": true
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "电视遥控",
+		"navigationBarBackgroundColor": "#0E1218",
+		"backgroundColor": "#0E1218"
+	}
+}
